@@ -35,9 +35,28 @@ void image_filter(double* rsltImg, const unsigned char* origImg, const unsigned 
                   const double* kernel, int knlWidth, int knlHeight,
                   double scale, double offset)
 {
-    // Note: copying origImg to rsltImg is NOT the solution, it does nothing!
+	//printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	int i, j;
+	double rsltPixel[3] = [0.0, 0.0, 0.0];
+	bool b = selection == NULL;
 
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	for (i = knlWidth/2 ; i < imgWidth - knlWidth/2; i++)
+	{
+		for (j = knlHeight/2; j < imgHeight - knlHeight/2; j++)
+		{
+			if (b || selection[j * imgWidth + i])
+			{
+				pixel_filter(rsltPixel, i, j, origImg, imgWidth, imgHeight, kernel, 
+				knlWidth, knlHeight, scale, offset);
+
+				rsltImg[3 * (j * imgWidth + i) + 0] = rsltPixel[0];
+				rsltImg[3 * (j * imgWidth + i) + 1] = rsltPixel[1];
+				rsltImg[3 * (j * imgWidth + i) + 2] = rsltPixel[2];
+
+				rsltPixel = [0.0, 0.0, 0.0];
+			}
+		}
+	}
 
 }
 
@@ -74,8 +93,23 @@ void pixel_filter(double rsltPixel[3], int x, int y, const unsigned char* origIm
                   const double* kernel, int knlWidth, int knlHeight,
                   double scale, double offset)
 {
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+//printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	int i,j; //iterators
+	int x1 = x - knlWidth / 2 , y1 = y - knlHeight/2;
 
+	for (i = 0; i < knlWidth; i++)
+	{
+		for (j = 0; j < knlHeight; j++)
+		{
+			double d = kernel[i][j]; //Not too sure about the order here. 
+			rsltPixel[0] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 0] * d;
+			rsltPixel[1] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 1] * d;
+			rsltPixel[2] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 2] * d;
+		}
+	}
+	rsltPixel[0] = rsltPixel[0]/scale + offset;
+	rsltPixel[1] = rsltPixel[1]/scale + offset;
+	rsltPixel[2] = rsltPixel[2]/scale + offset;
 }
 
 /************************ END OF TODO 3 **************************/
