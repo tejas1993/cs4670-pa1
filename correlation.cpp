@@ -37,7 +37,7 @@ void image_filter(double* rsltImg, const unsigned char* origImg, const unsigned 
 {
 	//printf("TODO: %s:%d\n", __FILE__, __LINE__); 
 	int i, j;
-	double rsltPixel[3] = [0.0, 0.0, 0.0];
+	double rsltPixel[3] = {0.0, 0.0, 0.0};
 	bool b = selection == NULL;
 
 	for (i = knlWidth/2 ; i < imgWidth - knlWidth/2; i++)
@@ -53,7 +53,9 @@ void image_filter(double* rsltImg, const unsigned char* origImg, const unsigned 
 				rsltImg[3 * (j * imgWidth + i) + 1] = rsltPixel[1];
 				rsltImg[3 * (j * imgWidth + i) + 2] = rsltPixel[2];
 
-				rsltPixel = [0.0, 0.0, 0.0];
+				rsltPixel[0] = 0.0;
+				rsltPixel[1] = 0.0;
+				rsltPixel[2] = 0.0;
 			}
 		}
 	}
@@ -101,7 +103,7 @@ void pixel_filter(double rsltPixel[3], int x, int y, const unsigned char* origIm
 	{
 		for (j = 0; j < knlHeight; j++)
 		{
-			double d = kernel[i][j]; //Not too sure about the order here. 
+			double d = kernel[j * knlWidth + i]; //Not too sure about the order here. 
 			rsltPixel[0] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 0] * d;
 			rsltPixel[1] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 1] * d;
 			rsltPixel[2] += origImg[3 * ((y1 + j) * imgWidth + (x1 + i)) + 2] * d;
